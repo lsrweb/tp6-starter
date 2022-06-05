@@ -11,6 +11,7 @@
 
 // [ 应用入口文件 ]
 namespace think;
+if (version_compare(PHP_VERSION, '7.1.0', '<')) die('require PHP > 7.1.0 !');
 
 require __DIR__ . '/../vendor/autoload.php';
 

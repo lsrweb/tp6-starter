@@ -2,7 +2,6 @@
 
 namespace app\glob\controller;
 
-use app\Request;
 use Qiniu\Storage\UploadManager;
 use think\facade\Env;
 use Qiniu\Auth;

@@ -5,6 +5,7 @@ namespace app\school\controller\v1;
 
 use think\App;
 use think\exception\ValidateException;
+use think\Request;
 use think\Validate;
 
 /**
@@ -14,7 +15,7 @@ abstract class BaseController
 {
     /**
      * Request实例
-     * @var \think\Request
+     * @var Request
      */
     protected $request;
 
@@ -23,7 +24,7 @@ abstract class BaseController
 
     /**
      * 应用实例
-     * @var \think\App
+     * @var App
      */
     protected $app;
 
