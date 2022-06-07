@@ -3,4 +3,4 @@
 /vendor
 *.log
 .env
-/public/upload/topic/20220607/
+/public/upload
