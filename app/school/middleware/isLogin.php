@@ -10,6 +10,7 @@ class isLogin
     {
         $token = $request->header('Authorization');
         $res = checkToken($token);
+
         if ($res['code'] == -1) {
             return errorMsg($res['msg'], 400);
         }

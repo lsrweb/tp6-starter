@@ -4,6 +4,7 @@ namespace app\school\controller\v1;
 
 use app\common\model\SchoolUserModel;
 use app\common\model\SchooModel;
+use app\glob\controller\Email;
 use app\school\validate\AuthValidate;
 use think\exception\ValidateException;
 use think\facade\Cache;
@@ -19,16 +20,26 @@ class Auth extends BaseController
         try {
             Validate([
                 'username' => 'require',
-                'password' => 'require'
+                'password' => 'require',
+                'code' => preg_match("/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i", $params['username']) ? 'require' : '',
             ], [
                 'username.require' => '请输入用户名',
-                'password.require' => '请输入密码'
+                'password.require' => '请输入密码',
+                'code.require' => '请输入邮箱验证码',
             ])->check($params);
-
             // 查询账号是否存在,判断传入account是账号还有邮箱
             // 判断字符是不是邮箱
             if (preg_match("/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i", $params['username'])) {
-                $user = SchoolUserModel::where('email', $params['email'])->find();
+                $user = SchoolUserModel::where('email', $params['username'])->find();
+                $checkCode = Cache::store('redis')->get($params['username']);
+                if (!$checkCode) {
+                    return errorMsg('验证码已过期');
+                }
+                if ($checkCode != $params['code']) {
+                    return errorMsg('邮箱验证码错误');
+                }
+                // 验证成功后删除缓存
+                Cache::store('redis')->delete($params['username']);
             } else {
                 $user = SchoolUserModel::where('phone', $params['username'])->find();
             }
@@ -37,15 +48,20 @@ class Auth extends BaseController
             } else {
                 // redis缓存
                 $catch = Cache::store('redis')->get('school_' . $user['id']);
+                // 验证缓存token是否正常未过期
                 if (passwordVerify($params['password'], $user['password'])) {
-                    $token = signAccessToken($user['id']);
-                    Cache::store('redis')->set('school_' . $user['id'], $token, 86400);
+                    // 如果不存在token则重新签发,存在则读取缓存token
+                    if (!$catch) {
+                        $token = signAccessToken($user['id']);
+                        Cache::store('redis')->set('school_' . $user['id'], $token, 86400);
+                    } else {
+                        $token = $catch;
+                    }
                     return successMsg('登录成功', ['access_token' => $token]);
                 } else {
                     return errorMsg('密码错误');
                 }
             }
-
 
         } catch (ValidateException $e) {
             return errorMsg($e->getMessage(), []);

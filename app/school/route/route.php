@@ -19,10 +19,15 @@ Route::group('', function () use ($version) {
         Route::post('info', "school/{$version}.Auth/getSchoolInfo")->middleware('isLogin');
     });
 
+    /**
+     * 题库管理
+     */
+    Route::group('ques', function () use ($version) {
+        Route::get('list', "school/{$version}.Question/questList");
+        Route::post('create', "school/{$version}.Question/questAdd");
+        Route::post('read-file', "school/{$version}.Question/uploadXls");
 
-})->allowCrossDomain([
-    'Access-Control-Allow-Origin' => '*',
-    'Access-Control-Allow-Methods' => 'GET,POST,OPTIONS,PUT',
-    'Access-Control-Allow-Headers' => 'content-type,token,version',
-    'Access-Control-Allow-Credentials' => 'true'
-]);
+    });
+
+
+});
