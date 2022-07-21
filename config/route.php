@@ -34,7 +34,7 @@ return [
     // 访问控制器层名称
     'controller_layer' => 'controller',
     // 空控制器名
-    'empty_controller' => 'Error',
+    'empty_controller' => 'NotFound',
     // 是否使用控制器后缀
     'controller_suffix' => false,
     // 默认的路由变量规则

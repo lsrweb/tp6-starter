@@ -9,6 +9,6 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-\think\facade\Route::get('', function () {
-    return 'Hello Oa Teacher';
-});
+//\think\facade\Route::get('', function () {
+//    return 'Hello World';
+//});
