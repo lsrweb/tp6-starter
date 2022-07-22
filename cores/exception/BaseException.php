@@ -79,7 +79,7 @@ class BaseException extends Handle
     {
         $jsonData = ['message' => $this->message, 'data' => $this->data];
 //        return
-        var_dump($this->getVisitor());
+//        var_dump($this->getVisitor());
         return \json($jsonData, 500);
     }
 
